@@ -7,6 +7,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configuración para MercadoLibreApiClient
+var mercadoLibreApiConfig = builder.Configuration.GetSection("MercadoLibreApi");
+var baseAddress = mercadoLibreApiConfig["BaseUrl"];
+
+if (string.IsNullOrWhiteSpace(baseAddress))
+{
+    throw new InvalidOperationException("MercadoLibre API BaseUrl is not configured in appsettings.json.");
+}
+
+builder.Services.AddHttpClient<MLAPI.Services.MercadoLibreApiClient>(client =>
+{
+    client.BaseAddress = new Uri(baseAddress);
+});
+// Fin de configuración para MercadoLibreApiClient
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
